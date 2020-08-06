@@ -1,0 +1,15 @@
+# PITCHME-DOT-YAML-SETTINGS-THEME-BUILDER-GENERATED-START
+theme            : template
+theme-background : [ "#2B3252" ]
+theme-headline   : [ "Montserrat", "#FAD744", "none", "#FFFFFF", "100", "120", "15" ]
+theme-byline     : [ "Raleway", "#FFFFFF", "none", "#FAD744", "100", "110", "15" ]
+theme-text       : [ "Ubuntu", "#FFFFFF", "none", "#FAD744", "100", "100", "15" ]
+theme-links      : [ "#F1C40F", "#5254F7" ]
+theme-code       : [ "Source Code Pro", "100", "120" ]
+highlight        : atom-one-dark
+theme-controls   : [ "#C0C0C0" ]
+theme-margins    : [ "0", "15px" ]
+layout           : center
+# PITCHME-DOT-YAML-SETTINGS-THEME-BUILDER-GENERATED-END
+
+image-size-limits : false

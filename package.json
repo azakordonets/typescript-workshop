@@ -1,0 +1,28 @@
+{
+  "name": "typescript-workshop",
+  "version": "1.0.0",
+  "description": "I'm going to work on a small workshop for my team in New10 and i would like to give an intro into typescript to my colleaguges",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/azakordonets/typescript-workshop.git"
+  },
+  "keywords": [
+    "typescript",
+    "workshop",
+    "learning"
+  ],
+  "author": "Andrew Zakordonets",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/azakordonets/typescript-workshop/issues"
+  },
+  "homepage": "https://github.com/azakordonets/typescript-workshop#readme",
+  "dependencies": {
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  }
+}
