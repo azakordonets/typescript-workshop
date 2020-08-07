@@ -1,4 +1,4 @@
-Boolean, Number, String, Array,
+Boolean, String, Number, Array,
 Tuple, Enum, Unknown, Any,
 Void, Null, Undefined, Never,
 Object, Symbol
