@@ -710,3 +710,198 @@ console.log(jamesTestScore); // [ 'James', [100, 98, 100]]
 @snapend
 
 ---
+
+@snap[north text-06 span-100]
+## Enum
+@snapend
+
+@snap[midpoint span-40]
+```typescript zoom-07
+enum Direction {
+    Right = 1
+    Left = 2
+    Up = 3
+    Down = 4
+}
+console.log(typeof(Direction)) // object
+console.log(typeof(Direction)) // number
+
+console.log(Direction.Right) // 1
+console.log(Direction['Left']) // 2
+console.log(Directions['3']) // Up
+
+enum Direction {
+    Right
+    Left
+    Up
+    Down
+}
+console.log(Direction.Right) // 0
+console.log(Direction['Left']) // 1
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-6](*Enum* allows us to define the collection of related values to be used by name)
+@[7-8](There are 3 types of enums: _numeric_, _string_, _Heterogeneous_ enums (both string & numbers))
+@[10](We can reffer to the enum value by it's name)
+@[11](Or in a bit different way of specifying name)
+@[12](Or you can reference enum by it's value)
+@[13-21](If you don't specify value for the enum, then it will be automatically assigned starting from 0)
+@snapend
+
+---
+
+@snap[north text-06 span-100]
+## Numeric enum
+@snapend
+
+@snap[midpoint span-30]
+```typescript zoom-05
+enum Direction {
+ Right // 0
+    Left // 1
+    Up // 2
+    Down // 3
+}
+
+enum Direction {
+    Right = 2
+    Left // 3
+    Up // 4
+    Down // 5
+}
+
+console.log(Direction[2]) // Right
+console.log(Direction)
+// Output
+// {
+//  '2': 'Right',
+//  '3': 'Left',
+//  '4': 'Up',
+//  '5': 'Down',
+//  Right: 2,
+//  Left: 3,
+//  Up: 4,
+//  Down: 5,
+// }
+
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-6](The _Numeric enum_ stores the values as a number. You can define an enum without assigning a value as shown below. The Typescript automatically assigns the numeric values starting from 0.)
+@[8-13](You can provide a starting number as shown in the example below. All the following elements with get automatically next number)
+@[15](You would think that you can only  access enum value by it's name, but actually you can also get it by it's value)
+@[16-30](Because this is how enum looks like when you log it's structure)
+@snapend
+
+---
+
+@snap[north text-06 span-100]
+## Computed Enum
+@snapend
+
+@snap[midpoint span-50]
+```typescript zoom-07
+enum VehicleType {
+  Car=1,
+  Plane,
+  Train= 5 + VehicleType.Plane, // 7
+  Bike = getRandomNumberBetween(10,20) // 11
+}
+ 
+console.log(VehicleType)
+ 
+// Output:
+// { '1': 'Car',
+//    '2': 'Plane',
+//    '7': 'Train',
+//    '11': 'Bike',
+//    Car: 1,
+//    Plane: 2,
+//    Train: 7,
+//    Bike: 11 
+//  }
+
+```
+@snapend
+@snap[south span-100 text-06]
+@[4](Enum can also include the members with computed values.)
+@[5](Actually you can use any function)
+@[7-30](As always, it will autogenerate next available numbers for the rest)
+@snapend
+
+---
+
+@snap[north text-06 span-100]
+## String Enum
+@snapend
+
+@snap[midpoint span-50]
+```typescript zoom-07
+enum VehicleType {
+  Car="Car",
+  Plane="Plane",
+}
+ 
+console.log(VehicleType.Car);      //Car
+console.log(VehicleType["Car"]);   //Car
+
+function printVehicle(v: Vehicle) {
+    switch (val) {
+        case VehcileType.Car:
+          console.log("It is a Car");
+          break;
+        case VehcileType.Plane:
+          console.log("It is a Plane.");
+          break;
+        default:
+          console.log("No such vehicle");
+          break;
+      }
+}
+
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-4](We can also use the strings instead of numbers as values.The only difference is that the we must initialize the values.)
+@[6-7](You can access it just like with Number Enums)
+@[8-30](Enums help to clearly define what action need to be done based on Enum value)
+@snapend
+
+---
+
+@snap[north text-06 span-100]
+## Heterogeneous Enums
+@snapend
+
+@snap[midpoint span-50]
+```typescript zoom-07
+enum VehicleType {
+  Car="Car",
+  Plane="Plane",
+}
+ 
+console.log(VehicleType.Car);      //Car
+console.log(VehicleType["Car"]);   //Car
+
+function printVehicle(v: Vehicle) {
+    switch (val) {
+        case VehcileType.Car:
+          console.log("It is a Car");
+          break;
+        case VehcileType.Plane:
+          console.log("It is a Plane.");
+          break;
+        default:
+          console.log("No such vehicle");
+          break;
+      }
+}
+
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-4](We can also use the strings instead of numbers as values.The only difference is that the we must initialize the values.)
+@[6-7](You can access it just like with Number Enums)
+@[8-30](Enums help to clearly define what action need to be done based on Enum value)
+@snapend
