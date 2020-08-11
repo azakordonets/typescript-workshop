@@ -875,33 +875,175 @@ function printVehicle(v: Vehicle) {
 @snapend
 
 @snap[midpoint span-50]
-```typescript zoom-07
-enum VehicleType {
-  Car="Car",
-  Plane="Plane",
-}
- 
-console.log(VehicleType.Car);      //Car
-console.log(VehicleType["Car"]);   //Car
-
-function printVehicle(v: Vehicle) {
-    switch (val) {
-        case VehcileType.Car:
-          console.log("It is a Car");
-          break;
-        case VehcileType.Plane:
-          console.log("It is a Plane.");
-          break;
-        default:
-          console.log("No such vehicle");
-          break;
-      }
+```typescript zoom-10
+enum ShouldIUseThisFeature {
+  No = 'NO',
+  Yes = 1
 }
 
 ```
 @snapend
 @snap[south span-100 text-06]
-@[1-4](We can also use the strings instead of numbers as values.The only difference is that the we must initialize the values.)
-@[6-7](You can access it just like with Number Enums)
-@[8-30](Enums help to clearly define what action need to be done based on Enum value)
+@[1-10](Technically enums can be mixed with string and numeric members, but it’s not clear why you would ever want to do so. Better not do that)
 @snapend
+
+---
+
+@snap[north text-06 span-100]
+## Const Enums
+@snapend
+
+@snap[midpoint span-50]
+```typescript zoom-10
+const enum VehicleType {
+  Car,
+  Plane,
+  Train
+}
+ 
+console.log(VehcileType.Car)        //0
+console.log(VehcileType["Car"])     //0
+console.log(VehcileType["Plane"])   //1
+console.log(VehcileType[0])         //ERROR
+console.log(VehcileType[1])         //ERROR
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-5](If an enum is prefixed with the keyword const, it doesn’t get transpiled. i.e. no javascript code is emitted. Instead, the compiler will replace the value of its member directly in the transpiled code, wherever they are used.)
+@[7-15](Since they do no have runtime representation, you cannot use computed member)
+@snapend
+
+---
+
+@snap[north text-06 span-100]
+## Type checking
+@snapend
+
+@snap[midpoint span-40]
+```typescript zoom-06
+enum VehicleType {
+  Car, Plane, Train
+}
+ 
+function describe(vehicle: VehicleType) {
+  console.log(vehicle);
+}
+describe(VehicleType.Car)  // OK
+describe(100)             // 100
+describe("Test")          //Error
+
+enum VehicleType {
+  Car="C", Plane="P", Train="T"
+}
+ 
+function describe(vehicle: VehicleType) {
+  console.log(vehicle);
+}
+ 
+someFn(VehicleType.Car)  //OK
+describe(100)             //Error
+describe("Test")          //Error
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-8](The Typescript performs a _loose type checking_ when number members are involved. For example the describe accepts VehicleType as argument. But describe also accepts any number. )
+@[9](Invoking _describe(100)_ with 100 as argument does not throw any errors.)
+@[10](But if you will pass something that is *not a number*, then you will get an *error*)
+@[11-30](But in case of _string_ enums it works as expected)
+@snapend
+
+---
+
+@snap[north text-06 span-100]
+## Summary @emoji[zap]
+@snapend
+
+@snap[midpoint span-80 text-06]
+@ul[list-spaced-bullets list-fade-fragments ]
+- *enum* types allows us to define the collection of related values to be used by name. 
+- They make the code easier to read 
+- Typescript checks type of element that you're trying to pass to tuple
+- You may use them when you want to limit the values that a variable can take to a small set of possible values
+- Javascript does not support enums, hence typescript creates runtime artifact to support them ( Except, *const enum* which do not have a runtime artifact).
+- Enums can be _numeric_, _string_, _heterogeneous_. Please do _not_ use _heterogeneous_ enums
+@ulend
+@snapend
+
+--- 
+
+@snap[north text-06 span-100]
+## null && undefined
+@snapend
+
+@snap[midpoint span-60]
+```typescript zoom-05
+// Not much else we can assign to these variables!
+let name: undefined = undefined
+let lastName: null = null
+
+let age: number
+console.log(age) // undefined
+age = 20 // 20 
+age = undefined // undefined
+
+let total: number // undefined
+total=null // null
+
+let name: string;
+name = "John Wick";       // ok
+name = undefined;        // Type 'undefined' is not assignable to type 'string'  
+name = null;             // Type 'null' is not assignable to type 'string'
+  
+let forecast: any
+forecast = 24;               // ok
+forecast = undefined;        // ok
+forecast = null;             // ok
+ 
+let phone: null
+phone = undefined;       // Type 'undefined' is not assignable to type 'null'
+phone = null;            // ok
+ 
+let result: undefined
+result = undefined;         // ok
+result = null;              // Type 'null' is not assignable to type 'undefined'.
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-3](In TypeScript, both _undefined_ and _null_ actually have their own types named undefined and null respectively. Much like _void_, they’re not extremely useful on their own)
+@[5-6](The Undefined means a variable has been declared but has not yet been assigned a value. The undefined variables do not have any value. It is an unintentional absence of any value)
+@[7-8](We can also assign undefined value variables of any other types, except _never_)
+@[10-12](_Null_ means an _empty_ or _non-existent_ value. The absence of value here is _intentional_. The TypeScript does not automatically make a variable null. We have to assign Null to variable to make it null)
+@[13-30](Now, with _"strictNullChecks": true_ in _tsconfig.json_, the compiler raises the error when you assign undefined or null to any variables except any. Even assigning undefined to a null variable or vice versa also results in a compile-time error)
+@snapend
+
+---
+
+@snap[north text-05 span-100]
+## Checking for undefined and null @emoji[ok]
+@snapend
+
+@snap[midpoint span-90]
+```typescript zoom-07
+let age: number| null | undefined;
+console.log(age)                     // undefined
+console.log(typeof age)              // undefined
+console.log(age == null)             // true // == operator returns true for null
+console.log(age === null)            // false
+console.log(age == undefined)        // true
+console.log(age === undefined)       // true
+
+age=null;
+console.log(age)                     // null
+console.log(typeof age)              // object
+console.log(age==null)               // true
+console.log(age===null)              // true
+console.log(age==undefined)          // true   //  == operator returns true for undefined
+console.log(age===undefined)         // false
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-7](You can check for _undefined_ using the _typeof_ operator or by using the Equals Operator _==_ vs Strict Equals Operator _===_)
+@[9-20](You _cannot_ use _typeof_ operator to check for null as it returns _object_. Hence you can either use the _==_ or _===_)
+@snapend
+
+---
