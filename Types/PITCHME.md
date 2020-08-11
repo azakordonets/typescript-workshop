@@ -1047,3 +1047,125 @@ console.log(age===undefined)         // false
 @snapend
 
 ---
+
+@snap[north text-06 span-100]
+## Summary @emoji[zap]
+@snapend
+
+@snap[midpoint span-80 text-06]
+@ul[list-spaced-bullets list-fade-fragments ]
+- The _undefined_ variables do not have any value. It is an unintentional absence of any value
+- _Null_ means an empty or non-existent value. The absence of value here is intentional.
+@ulend
+@snapend
+
+---
+
+@snap[north text-05 span-100]
+## Any @emoji[stars]
+@snapend
+
+@snap[midpoint span-40]
+```typescript zoom-07
+let stock          //inferred typing 
+let reason: any    //explicit typing
+
+let score: any
+score = "100.5175";
+score = { lakers: 90, goldenState: 95 }
+score = 100.51575;
+
+let { coolHack } from 'third-party-lib'
+let maxValue: Any = coolHackValue  
+
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-2](The typescript creates a variable as Any under the following circumstances: 1. If you do not declare the type and typescript does not infer the type from its initialization or from its usage - inferred typing. 2) You explicitly declare the type as Any  - explicit typing)
+@[4-7](The Typescript compiler does _not_ make type checking on the variable of type _Any_.  When you define a variable as Any, you are basically opting out of type checking)
+@[9-10](You can use _Any_ when you do not know the data type of the variable. This may be the case when you work with the third-party libraries and does not want the compiler to throw errors)
+@snapend
+
+---
+
+@snap[north text-05 span-100]
+## Void vs Never @emoji[no_entry]
+@snapend
+
+@snap[midpoint span-80]
+```typescript zoom-09
+function error(message: string): never {
+  throw new Error(message);
+}
+
+// Function returning never must not have a reachable end point
+function infiniteLoop(): never {
+  while (true) {}
+}
+
+function log(msg: string): void {
+    console.log(msg)
+}  
+
+```
+@snapend
+@snap[south span-100 text-06]
+@[1-8](The _never_ type represents the type of values that _never occur_. For instance, never is the return type for a function expression or an arrow function expression that always throws an exception or one that never returns)
+@[10-20](We use _void_ when the function _does return_ but _does not return a value_)
+@[1-8](The _never_ return type when the function _does not return at all_)
+@snapend
+
+---
+
+@snap[north text-05 span-100]
+## Any vs Unknown @emoji[grey_question]
+@snapend
+
+@snap[midpoint span-60]
+```typescript zoom-06
+function prettyPrint(x: unknown): string {
+  if (Array.isArray(x)) {
+    return "[" + x.map(prettyPrint).join(", ") + "]"
+  }
+  if (typeof x === "string") {
+    return `"${x}"`
+  }
+  if (typeof x === "number") {
+    return String(x)
+  } 
+  return "etc."
+}
+
+import isArray from "isarray"
+
+function prettyPrint(x: any): string {
+  if (isArray(x)) { // whoops - this `isArray` is not a type guard!
+    return "[" + x.mop(prettyPrint).join(", ") + "]"
+  }
+  /* snip */
+  return "etc."
+}
+
+```
+@snapend
+@snap[south span-100 text-06]
+@[1](Any value can be assigned to a variable of type _unknown_. So use unknown when a value might have any type, or when it is not convenient to use a more specific type)
+@[1-12](You _cannot do much_ with an unknown value directly. But you can use _type guards_ to narrow the type and get accurate type-checking for blocks of code operating on narrowed types.)
+@[14-30](The _isarray_ package does not include type definitions to turn the _isArray_ function into a _type guard_. But we might use isarray without realizing that detail. Because isArray is not a type guard, and we used any for the type of x, the type of x remains any in the if body. As a result, the compiler does not catch the typo in this version of prettyPrint.)
+@snapend
+
+---
+
+@snap[north text-06 span-100]
+## When use any, never, uknown @emoji[grey_question]
+@snapend
+
+@snap[midpoint span-80 text-06]
+@ul[list-spaced-bullets list-fade-fragments ]
+- Use _never_ in positions where there will not or should not be a value.
+- Use _unknown_ where there will be a value, but it might have any type.
+- _Avoid_ @emoji[exclamation] using _any_ unless you really need an unsafe escape hatch
+@ulend
+@snapend
+
+---
