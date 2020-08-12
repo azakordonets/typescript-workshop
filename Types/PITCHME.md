@@ -999,7 +999,7 @@ forecast = 24;               // ok
 forecast = undefined;        // ok
 forecast = null;             // ok
  
-let phone: null
+let phone: nul
 phone = undefined;       // Type 'undefined' is not assignable to type 'null'
 phone = null;            // ok
  
@@ -1166,6 +1166,67 @@ function prettyPrint(x: any): string {
 - Use _unknown_ where there will be a value, but it might have any type.
 - _Avoid_ @emoji[exclamation] using _any_ unless you really need an unsafe escape hatch
 @ulend
+@snapend
+
+---
+
+@snap[north text-05 span-100]
+## Symbol @emoji[symbols]
+@snapend
+
+@snap[midpoint span-70]
+```typescript zoom-08
+const head = Symbol()
+const title = Symbol('title')
+Symbol('title') === Symbol('title') // always false
+
+console.log(title.description) // title
+console.log(title.toString()) // Symbol(title)
+
+var password = Symbol('password');
+var person = {};
+person['name'] = 'John Wick';
+person[password] = 'superSecretPassword';
+Object.keys(person); // -> [ 'name' ]
+Object.getOwnPropertyNames(person); // -> [ 'name' ]
+Object.getOwnPropertySymbols(person); // -> [ Symbol(name) ]
+assert(Object.getOwnPropertySymbols(person)[0] === password);
+```
+@snapend
+@snap[south span-100 text-06]
+@[1](_Symbol_ is a primitive data type in JavaScript and TypeScript, which, amongst other things, can be used for object properties. Compared to number and string, symbols have some unique features that make them stand out.)
+@[2](_Symbol_ has no constructor function. The parameter is an _optional_ description. By calling the factory function, _title_ is assigned the unique value of this freshly created symbol)
+@[3](This _symbol_ is now unique, distinguishable from all other symbols and doesn’t clash with any other symbols that have the same description.)
+@[5-6](The _description_ helps you to get info on the Symbol during development time)
+@[8-13](In addition to that, _Symbols_ do not show up on an Object using _for...in_, _for...of_ or _Object.getOwnPropertyNames_)
+@[14-15](The only way to get the _Symbols_ within an Object is _Object.getOwnPropertySymbols_)
+@[14-15](This means _Symbols_ give a whole new sense of purpose to Objects - they provide a kind of _hidden under layer to Objects_ - not iterable over, not fetched using the already existing Reflection tools and guaranteed not to conflict with other properties in the object!)
+@snapend
+
+---
+
+@snap[north text-03 span-100]
+## What Symbols are, what Symbols aren’t.
+@snapend
+@snap[midpoint span-100 text-04]
+@ul[list-spaced-bullets list-fade-fragments span-80]
+- _Symbols will never conflict with Object string keys_. This makes them great for extending objects you’ve been given (e.g. as a function param) without affecting the Object in a noticeable way.
+- _Symbols cannot be read using existing reflection tools_. You need the new _Object.getOwnPopertySymbols()_ to access an Object’s symbols, this makes Symbols great for _storing bits of information you don’t want people getting at through normal operation_. Using Object.getOwnPropertySymbols() is a pretty special use-case.  
+- _Symbols are not private_. The other edge to that sword - all of the Symbols of an object can be gotten by using Object.getOwnSymbols() - not very useful for a truly private value. _Don’t try to store information you want to be really private in an Object using a symbol - it can be gotten!_
+- _Enumerable Symbols can be copied to other objects using new methods like Object.assign_. If you try calling Object.assign(newObject, objectWithSymbols) all of the (enumerable) Symbols in the second param (objectWithSymbols) _will be copied to the first_ (newObject). If you don’t want this to happen, make them non-enumerable with _Object.defineProperty_
+- _Symbols are not coercible into primitives_. If you try to coerce a Symbol to a primitive (+Symbol(), ''+Symbol(), Symbol() + 'foo') it will throw an Error. This prevents you accidentally _stringifying_ them when setting them as property names
+- _Symbols are not always unique_. _Symbol.for()_ returns you a _non-unique_ Symbol. Don’t always assume the Symbol you have is unique, unless you made it yourself.
+@ulend
+@snapend
+
+---
+
+@snap[north text-03 span-100]
+## Questions @emoji[grey_question]
+@snapend
+
+@snap[midpoint]
+![IMAGE](assets/img/question.gif)
 @snapend
 
 ---
