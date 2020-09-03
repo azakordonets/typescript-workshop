@@ -1,5 +1,6 @@
 # Types in Typescript
-
+---
+# Part 1
 ---
 @snap[north span-100 text-08]
 ## Why do we need them? @emoji[confused]
@@ -166,7 +167,7 @@ isItFun=Boolean({ name:'test'})  // true
 @[5-6](Empty values are false by default)
 @[7-8](0 as boolean is false. All other numbers will result in true)
 @[9-11](Null, undefined, NaN will result in false)
-@[11-16](All other values will result in true. Even empty object)
+@[12-16](All other values will result in true. Even empty object)
 @snapend
 
 ---
@@ -185,11 +186,11 @@ isItFun=Boolean({ name:'test'})  // true
 @snap[east span-60]
 ```typescript
 let log = console.log
-let boolVar = new Boolean("test");
-log(boolVar); // [Boolean: true]
-log(typeof(boolVar)); // object
-log(boolobj.valueOf())  // true
-log(typeof(boolobj.valueOf())) //boolean
+let isTest = new Boolean("test");
+log(isTest); // [Boolean: true]
+log(typeof(isTest)); // object
+log(isTest.valueOf())  // true
+log(typeof(isTest.valueOf())) //boolean
 ```
 @snapend
 
@@ -597,6 +598,18 @@ let mergedScore = [...initialScores, ...updatedScores] // [10, 20, 30, 40]
 @ulend
 @snapend
 
+---
+ 
+@snap[north text-03 span-100]
+## Questions @emoji[grey_question]
+@snapend
+
+@snap[midpoint]
+![IMAGE](assets/img/question.gif)
+@snapend
+
+---
+# Part 2
 ---
 @snap[north text-06 span-100]
 ## Tuple @emoji[tulip]

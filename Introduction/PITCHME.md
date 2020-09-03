@@ -47,8 +47,9 @@
 ## Here's where typescript comes handy
 @snapend
 
-@code[js](src/typescript/misspeled.ts)
-
+@snap[midpoint span-90]
+@code[js zoom-12](src/typescript/misspeled.ts)
+@snapend
 @snap[south span-100]
 @[1](We define an object)
 @[2](Then we calculate area)
@@ -70,7 +71,7 @@
 @[2](First install Typescript)
 @[3](Create simple Typescript file)
 @[4](Compile it)
-@[5](Now you can run compiled Javascript file with node)
+@[5-6](Now you can run compiled Javascript file with node)
 @snapend
 @snap[east span-80]
 ![width=500](assets/img/install_typescript.gif)
