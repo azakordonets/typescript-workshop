@@ -125,9 +125,9 @@ class TestResultsProcessor {
 }
 
 const testResultProcessor = new TestResultsProcessor()
-let s3 = new S3StoringMechanism();
+let s3 = new S3StoringMechanism()
 testResultProcessor.saveResult(s3, 'smoke', '/', 'pass')
-let local = new LocalStoringMechanism();
+let local = new LocalStoringMechanism()
 testResultProcessor.saveResult(local, 'smoke', '/', 'pass')
 ```
 @snapend
@@ -356,10 +356,10 @@ let bill:IEmployee = {
 ```typescript zoom-06
 function log(msg: string): void {
     const time = \`${new Date().getHours()}:${new Date().getMinutes()}\`
-    console.log(\`${time}: ${msg}\`);
+    console.log(\`${time}: ${msg}\`)
 }
 
-log('Running Typescript'); //Output: 15:55 Running TypeScript
+log('Running Typescript') //Output: 15:55 Running TypeScript
 
 let log = function(msg: string): void {
     // implementation
@@ -385,4 +385,257 @@ log('Failed', 'Oh no! :(' ) // Oh no! :( Failed
 @[7-11](Or they can be anonymous)
 @[11-18](Functions can have *optional* parameters. The parameters that may or may not receive a value can be appended with a '?' to mark them as optional.)
 @[19-25](Functions can have *optional* parameters. The parameters that may or may not receive a value can be appended with a '?' to mark them as optional.)
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Unions @emoji[link]
+@snapend
+
+@snap[midpoint span-60]
+```typescript zoom-06
+function padLeft(value: string, padding: any) {
+  if (typeof padding === "number") {
+    return Array(padding + 1).join(" ") + value
+  }
+  if (typeof padding === "string") {
+    return padding + value
+  }
+  throw new Error(\`Expected string or number, got '${padding}'.\`)
+}
+
+padLeft("Hello world", 4) // returns "    Hello world" 
+padLeft("Hello world", true) // error
+
+function padLeft(value: string, padding: number | string) {
+    // implementation
+}
+
+padLeft("Hello world", true) // Typescript complication error
+
+type Padding = number | string
+function(value: string, padding: Padding) ...
+
+```
+@snapend
+
+@snap[south span-100]
+@[1-9](Occasionally, you’ll run into a library that expects a parameter to be either a number or a string. For instance, take the following function)
+@[11](And when you pass *number* or *string* to *padding* parameter things works fine)
+@[12](But when you will pass something else, Typescript won't complain because *padding* has *any* type. So your own guard will throw the error)
+@[14-16](But we can use *type union* by specifying *padding* type as *number | string*. This way of defining the type will tell Typescript that *padding* can be *either* number or string)
+@[18](And now Typescript will catch this for you during compilation and not runtime!)
+@[19-21](You can also use type aliases. They look very similar to interfaces, so it's recommended to prefer an interface to type alias.)
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Unions with Common Fields @emoji[link] 
+@snapend
+
+@snap[midpoint span-40]
+```typescript zoom-06
+interface Bird {
+  fly(): void
+  layEggs(): void
+}
+
+interface Fish {
+  swim(): void
+  layEggs(): void
+}
+
+declare function getSmallPet(): Fish | Bird {}
+
+let pet = getSmallPet()
+pet.layEggs()
+
+pet.swim() // error
+
+```
+@snapend
+
+@snap[south span-100]
+@[1-10](Let's imagine that we have two interfaces (_Bird_, _Fish_) that have a common method (_layEggs_))
+@[11](And we have a function that will return an instance of _either Bird or Fish_)
+@[13-14](Typescript will *allow* us to run a *common* _layEggs_ method on this instance)
+@[16](But we won't be able to run a method that is specific to one of the interfaces, because Typescript doesn't know at this moment whether it's a _Bird_ or _Fish_)
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Discriminating Unions @emoji[link] 
+@snapend
+
+@snap[midpoint span-40]
+```typescript zoom-06
+type NetworkLoadingState = {
+  state: "loading"
+}
+
+type NetworkFailedState = {
+  state: "failed"
+  code: number
+}
+
+type NetworkSuccessState = {
+  state: "success"
+  response: {
+    title: string
+    duration: number
+    summary: string
+  }
+}
+
+// Create a type which represents only one of the above types
+// but you aren't sure which it is yet.
+type NetworkState =
+  | NetworkLoadingState
+  | NetworkFailedState
+  | NetworkSuccessState
+
+```
+@snapend
+
+@snap[south span-100]
+@[1-17](A common technique for working with unions is to have a single field which uses literal types which you can use to let TypeScript narrow down the possible current type. For example, we’re going to create a union of three types which have a single shared field.)
+@[19-25](When we create a variable that can potentially be one of this NetworkState interfaces, we only know that *state* field is the common one. )
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Discriminating Unions @emoji[link] 
+@snapend
+
+@snap[midpoint span-80]
+```typescript zoom-07
+function networkStatus(state: NetworkState): string {
+  state.code // will result in error
+
+  switch (state.state) {
+    case "loading":
+      return "Downloading...";
+    case "failed":      
+      return \`Error ${state.code} downloading\`
+    case "success":
+      return \`Downloaded ${state.response.title} - ${state.response.summary}\`
+  }
+}
+
+```
+@snapend
+
+@snap[south span-100]
+@[1-2](Right now TypeScript does not know which of the three potential types state could be. Trying to access a property which isn't shared across all types will raise an error)
+@[3-6](By switching on state, TypeScript can narrow the union down in code flow analysis)
+@[5-7](The type must be NetworkFailedState here, so accessing the `code` field is safe)
+@[8-9](In case of success we can get response details without compilation errors from Typescript)
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Union Exhaustiveness checking @emoji[link] 
+@snapend
+
+@snap[midpoint span-80]
+```typescript zoom-07
+type NetworkFromCachedState = {
+  state: "from_cache";
+  id: string
+  response: NetworkSuccessState["response"]
+}
+
+type NetworkState =
+  | NetworkLoadingState
+  | NetworkFailedState
+  | NetworkSuccessState
+  | NetworkFromCachedState;
+
+function logger(s: NetworkState): string {
+// Function lacks ending return statement and return type does not include 'undefined'.
+  switch (s.state) {
+    // ...
+}
+```
+@snapend
+
+@snap[south span-100]
+@[1-6](Let's imagive that we have added one more variation of Networkstate - *NetworkFromCachedState*)
+@[7-11](We would like the compiler to tell us when we don’t cover all variants of the discriminated union. For example, if we add NetworkFromCachedState to NetworkState, we need to update logger as well)
+@[13-25](There are two ways to do this. The first is to turn on _--strictNullChecks_ and specify a return type.)
+@[13-25](Because the switch is no longer exhaustive, TypeScript is aware that the function could sometimes return *undefined*. If you have an explicit return type string, then you will get an error that the return type is actually *string | undefined*)
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Union Exhaustiveness checking @emoji[link] 
+@snapend
+
+@snap[midpoint span-68]
+```typescript zoom-07
+function assertNever(x: never): never {
+  throw new Error("Unexpected object: " + x)
+}
+
+function logger(s: NetworkState): string {
+  switch (s.state) {
+    case "loading":
+      return "loading request"
+    case "failed":
+      return \`failed with code ${s.code}\`
+    case "success":
+      return "got response"
+    default: 
+      return assertNever(s)
+      // Argument of type 'NetworkFromCachedState'  
+      // is not assignable to parameter of type 'never'.
+  }
+}
+```
+@snapend
+
+@snap[south span-100]
+@[1-3](The second method uses the *never* type that the compiler uses to check for exhaustiveness)
+@[4-20](Here, *assertNever* checks that *s* is of type _never_ — the type that’s left after all other cases have been removed. If you forget a case, then s will have a _real type_ and you will get a type error.)
+@[4-20](This method requires you to define an extra function, but it’s much more obvious when you forget it because the error message includes the missing type name.)
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Intersection Types @emoji[negative_squared_cross_mark] 
+@snapend
+
+@snap[midpoint span-60]
+```typescript zoom-06
+interface ErrorHandling {
+  success: boolean;
+  error?: { message: string }
+}
+
+interface ArtworksData {
+  artworks: { title: string }[]
+}
+
+interface ArtistsData {
+  artists: { name: string }[]
+}
+
+type ArtworksResponse = ArtworksData & ErrorHandling
+type ArtistsResponse = ArtistsData & ErrorHandling
+
+const handleArtistsResponse = (response: ArtistsResponse) => {
+  if (response.error) {
+    console.error(response.error.message)
+    return
+  }
+
+  console.log(response.artists)
+}
+```
+@snapend
+
+@snap[south span-100]
+@[1-11](If we have networking requests with consistent error handling then it would be nice to have a separate common error type)
+@[13-40](This is where types Intersection fits perfectly)
+@[13-40](An _intersection_ type _combines_ multiple types into one. This allows you to _add together_ existing types to get a _single_ type that has all the features you need)
 @snapend
