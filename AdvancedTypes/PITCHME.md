@@ -346,3 +346,43 @@ let bill:IEmployee = {
 - Interfaces can be extended to import properties of other interfaces using the *extends* keyword
 @ulend
 @snapend
+
+---
+@snap[north span-100 text-08]
+## Functions
+@snapend
+
+@snap[midpoint span-60]
+```typescript zoom-06
+function log(msg: string): void {
+    const time = \`${new Date().getHours()}:${new Date().getMinutes()}\`
+    console.log(\`${time}: ${msg}\`);
+}
+
+log('Running Typescript'); //Output: 15:55 Running TypeScript
+
+let log = function(msg: string): void {
+    // implementation
+} 
+
+function log(msg: string, format?: string): void {
+    //implementation
+}
+log('Learning Typescript...') // Ok
+log('Learning Typescript...', 'dd-MM-yyyy') // Ok
+log('Learning Typescript...', 'ddMMyyyy', '2020') // Error
+
+function log(msg: string, appender: string = 'Yay! ') {
+    console.log(appender, msg)
+}
+log('Done') // Yay! Done
+log('Failed', 'Oh no! :(' ) // Oh no! :( Failed 
+```
+@snapend
+
+@snap[south span-100]
+@[1-6](Functions are the primary blocks of any program. Functions can be named, when we declare it and call it by name)
+@[7-11](Or they can be anonymous)
+@[11-18](Functions can have *optional* parameters. The parameters that may or may not receive a value can be appended with a '?' to mark them as optional.)
+@[19-25](Functions can have *optional* parameters. The parameters that may or may not receive a value can be appended with a '?' to mark them as optional.)
+@snapend
