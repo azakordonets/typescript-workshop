@@ -9,7 +9,7 @@
 @snap[midpoint span-100]
 @ul[midpoint list-spaced-bullets text-07 span-100]
 - Interface is a structure that defines the contract in your application
-- It defines the syntax for classes o follow  
+- It defines the syntax for classes to follow  
 - Classes that are derived from an interface must follow the structure provided by their interface
 - The TypeScript compiler does not convert interface to JavaScript. It uses interface for type checking. This is also known as "duck typing" or "structural subtyping"
 @ulend
@@ -91,6 +91,52 @@ function logEmployeeDetails(employee: IEmployee) {
     console.log(\`${name} from ${departmentId} has ${salary} salary\`)
 }
 ```
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Why would I need it @emoji[grey_question]
+@snapend
+
+@snap[midpoint span-50]
+```typescript zoom-05
+interface IStoreMechanism {
+    store(name: string, path: string, payload: string): void
+}
+
+class S3StoringMechanism implements IStoreMechanism {
+    store(name: string, path: string, payload: string) {
+        // store using S3 aws sdk
+    }
+}
+
+class LocalStoringMechanism implements IStoreMechanism {
+    store(name: string, path: string, payload: string) {
+        // store on local system
+    }
+}
+
+class TestResultsProcessor {
+    saveResult(storingMechanism: IStoreMechanism,
+               name: string, path: string,
+               payload: string) {
+        storingMechanism.store(name, path, payload)
+    }
+}
+
+const testResultProcessor = new TestResultsProcessor()
+let s3 = new S3StoringMechanism();
+testResultProcessor.saveResult(s3, 'smoke', '/', 'pass')
+let local = new LocalStoringMechanism();
+testResultProcessor.saveResult(local, 'smoke', '/', 'pass')
+```
+@snapend
+
+@snap[south span-100]
+@[1-3](Let's say we have a simple interface for storing some data)
+@[5-16](And we have also 2 implementations of this interface *S3StoringMechanism* and *LocalStoringMechanism*)
+@[17-23](If we define input parameter as *IStoringMechanism* interface)
+@[25-40](Then we can actually use both of our implementations in the same method!)
 @snapend
 
 ---
@@ -284,4 +330,19 @@ let bill:IEmployee = {
 
 @snap[south span-100]
 @[1-20](Interfaces can extend *one or more* interfaces. This makes writing interfaces flexible and reusable.)
+@snapend
+
+---
+@snap[north text-06 span-100]
+## Summary @emoji[zap]
+@snapend
+
+@snap[midpoint span-100 text-06]
+@ul[list-spaced-bullets list-fade-fragments ]
+- Interface is a structure that defines the contract in your application  
+- Using Interface you can define functions, arrays as types 
+- Interfaces are very powerfull when it comes to unit testing
+- We can define optional properties on an interface using *?* and read-only properties by using the *readonly* keyword in the property name 
+- Interfaces can be extended to import properties of other interfaces using the *extends* keyword
+@ulend
 @snapend

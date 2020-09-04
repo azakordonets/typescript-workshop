@@ -208,7 +208,6 @@ log(typeof(isTest.valueOf())) //boolean
 @ulend
 @snapend
 
-
 ---
 @snap[north text-06 span-100]
 ## Hey String! @emoji[wave]
