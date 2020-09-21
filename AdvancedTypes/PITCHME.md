@@ -639,3 +639,137 @@ const handleArtistsResponse = (response: ArtistsResponse) => {
 @[13-40](This is where types Intersection fits perfectly)
 @[13-40](An _intersection_ type _combines_ multiple types into one. This allows you to _add together_ existing types to get a _single_ type that has all the features you need)
 @snapend
+
+---
+@snap[north span-100 text-08]
+### Generics 
+@snapend
+
+@snap[midpoint span-80]
+```typescript zoom-07
+const last = (arr: Array<number>): number => {
+    return arr.[arr.length - 1]
+}
+
+const score = last([10, 20, 30]) // 30
+
+const last = (arr: Array<string>): string => {
+    return arr.[arr.length - 1]
+}
+
+const name = last ['John', 'Samanta'] // Samanta
+
+const last = <T>(arr: T[]): T => {
+    return [arr.length - 1]
+}
+
+const score = last([10, 20, 30]) // 30
+const name = last ['John', 'Samanta'] // Samanta
+const person = last([{name: 'John'}, {name: 'Samanta'}]) // {name: 'Samanta'}
+
+```
+@snapend
+
+@snap[south span-100]
+@[1-5](Let's say we need a function that will return last element of Array. We define a function and we say that we take array of numbers as input)
+@[7-12](And now we need to do the same for array of strings)
+@[1-12](Now we have two similar functions that differ only in type. What if we need to implement it for another 5-10 types? Writing same function over and over is not fun)
+@[13-40](You can do that with Generics!)
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Generic Classes 
+@snapend
+
+@snap[midpoint span-60]
+```typescript zoom-07
+class PrimitiveBox<T> {
+  zeroValue: T
+  add: (x: T, y: T) => T
+}
+
+let number = new PrimitiveBox<number>()
+number.zeroValue = 0
+number.add = function(x, y) {
+  return x + y
+}
+
+let string = new PrimitiveBox<string>()
+string.zeroValue = ''
+string.add = function(x, y) {
+  return x + y
+}
+
+console.log(string.add(string.zeroValue, "test")) // "test"
+
+```
+@snapend
+
+@snap[south span-100]
+@[1-5](Generic classes are useful when you want to write some simple wrapper that can be used on multiple types)
+@[6-10](So now we can create representation of number instance)
+@[11-18](Or string)
+@[6-25](And they both works just fine. You can implement *add* value for any object and reuse this class)
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Generic Constraints 
+@snapend
+
+@snap[midpoint span-100]
+```typescript zoom-07
+function loggingIdentity<T>(arg: T): T {
+  console.log(arg.length) // error: 'length' does not exist on type 'T'
+}
+
+interface LengthWise {
+  length: number;
+}
+
+function loggingIdentity<T extends LengthWise>(arg: T): T {
+  console.log(arg.length); // Now we know it has a .length property, so no more error
+  return arg;
+}
+
+loggingIdentity(3) // Argument of type 'number' is not assignable to parameter of type 'Lengthwise'.
+
+loggingIdentity({ length: 10, value: 3 }) // ok
+
+```
+@snapend
+
+@snap[south span-100]
+@[1-3](If we try to to get some value from Generic, then we will get an error because typescript at this moment knows nothing about this type)
+@[5-7](In order to explain Typescript which attributes should have our generic type we first create interface)
+@[9-12](And then with *extends* keyword we can tell typescript which attributes our generic type should have)
+@[14-16](This way Typescript will allow to pass only types that have *length* attribute)
+@snapend
+
+---
+@snap[north span-100 text-08]
+### Using Type Parameters in Generic Constraints 
+@snapend
+
+@snap[midpoint span-80]
+```typescript zoom-08
+function getProperty<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+
+let person = { schoolScore: 100, highSchoolScore: 250, total: 350 };
+
+getProperty(person, "total") // 350
+getProperty(person, "universityScore"); // error
+// Argument of type '"universityScore"' is not assignable to parameter 
+// of type '"schoolScore" | "highSchoolScore" | "total".
+```
+@snapend
+
+@snap[south span-100]
+@[1-20](You can declare a type parameter that is constrained by another type parameter)
+@[1-3](We’d like to get a property from an object given its name. We’d like to ensure that we’re not accidentally grabbing a property that does not exist on the obj, so we’ll place a constraint between the two types)
+@[5-7](When we call *getProperty* function on *person* object with a key that *exists* in the object, we get a value)
+@[8-10](But when we try to get a property that *doesn't exist* in the *person* object - we get an error. )
+@snapend
