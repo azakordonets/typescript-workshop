@@ -1,7 +1,5 @@
 # Advanced Types in Typescript
 ---
-# Part 1
----
 @snap[north span-100 text-08]
 ## Interfaces
 @snapend
@@ -384,7 +382,7 @@ log('Failed', 'Oh no! :(' ) // Oh no! :( Failed
 @[1-6](Functions are the primary blocks of any program. Functions can be named, when we declare it and call it by name)
 @[7-11](Or they can be anonymous)
 @[11-18](Functions can have *optional* parameters. The parameters that may or may not receive a value can be appended with a '?' to mark them as optional.)
-@[19-25](Functions can have *optional* parameters. The parameters that may or may not receive a value can be appended with a '?' to mark them as optional.)
+@[19-25](Functions can have *default* parameter values)
 @snapend
 
 ---
